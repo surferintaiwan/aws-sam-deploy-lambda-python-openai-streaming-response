@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Cool Chatbot
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    MemorySize: 1024
+    Timeout: 900
+    Tags:
+      project: coolChatbot
+      stage: dev
+
+Resources:
+  CoolChatbot:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      PackageType: Image
+      CodeUri: src/
+      Role: arn:aws:iam::xxxxxxxxxxx:role/CustomRole-Cool-Chatbot-Lambda
+      Environment:
+        Variables:
+          AWS_LWA_INVOKE_MODE: RESPONSE_STREAM
+      FunctionName: Cool-Chatbot-DEV
+      FunctionUrlConfig:
+        AuthType: AWS_IAM
+        InvokeMode: RESPONSE_STREAM
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-aaaaaaaaaaa
+        SubnetIds:
+          - subnet-bbbbbbbbbb
+          - subnet-cccccccccc
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./src
+      DockerTag: v1

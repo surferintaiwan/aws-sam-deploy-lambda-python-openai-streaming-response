@@ -1,0 +1,27 @@
+name: Deploy to DEV
+
+# Controls when the action will run. 
+on:
+  push:
+    branches: 
+      - development
+
+jobs:
+  deploy-lambda:
+    runs-on: ubuntu-latest
+    env:
+      ENV: DEV
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: 'Your-Secret-Access-Key-ID-Here' 
+          aws-secret-access-key: 'Your-Secret-Access-Key-Here'
+          aws-region: us-east-1
+
+      # sam build 
+      - run: sam build --use-container --template template.dev.yaml
+
+      # sam deploy
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name Cool-Chatbot-DEV --s3-bucket cool.chatbot.tmp --capabilities CAPABILITY_IAM --region us-east-1 --resolve-image-repos 
